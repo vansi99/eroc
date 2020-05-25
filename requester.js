@@ -5,7 +5,7 @@ const config = require('../config')
 const requester = {
     setting: {
         header: {
-            'Content-Type': 'application/json',
+
         },
         apiBase: config.api_base_backend,
         option: {
@@ -33,7 +33,13 @@ requester.fetch = ({ url, method, body, param, option }) => {
     }
 
     if (body) {
-        arg.body = option.formData? body : JSON.stringify(body)
+        if (option.formData) {
+            delete arg.headers['Content-Type']
+            arg.body = body
+        } else {
+            arg.headers['Content-Type'] = 'application/json'
+            arg.body = JSON.stringify(body)
+        }
     }
 
     if (url.indexOf('http') !== 0) {
