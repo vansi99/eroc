@@ -32,14 +32,29 @@ core.Router = (...params) => {
 core.ui = (template, command={}) => {
     const router = core.Router()
 
-    router.get('/', (req, res, next) => {
-        const context = {
-            layout: false,
+    router.get('/', async (req, res, next) => {
+        const handle = command.context
+        
+        let context = null
+
+        if (!handle) {
+            return res.render(template, { layout: false })
         }
 
-        command.context && Object.assign(context, command.context(req, res, next))
+        if (handle.constructor.name === 'AsyncFunction') {
+            context = await handle(req, res, next)
+        } else {
+            context = handle(req, res, next)
+        }
 
-        res.render(template, context)
+        if (!context) {
+            return
+        }
+
+        return res.render(template, {
+            layout: false,
+            ...context,
+        })
     })
 
     router.post('/', (req, res, next) => {

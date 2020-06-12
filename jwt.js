@@ -11,13 +11,24 @@ jwt.sign = (data, option={}) => {
     })
 }
 
-jwt.verify = (token, option, done) => {
-    if (!done) {
+jwt.verify = (token, option={}, done) => {
+
+    if (typeof option === 'function') {
         done =  option
         option = {}
     }
 
-    return jsonwebtoken.verify(token, option.secret || config.secret_key, done)
+    return new Promise((resolve, reject) => {
+        jsonwebtoken.verify(token, option.secret || config.secret_key, (error, data) => {
+            if (error) {
+                done && done(error)
+                reject(error)
+            }
+
+            done && done(null, data)
+            resolve(data)
+        })
+    })
 }
 
 module.exports = jwt
