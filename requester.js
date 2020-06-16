@@ -2,6 +2,7 @@ const fetch = require('node-fetch')
 
 const config = require('../config')
 
+
 const requester = {
     setting: {
         header: {
@@ -38,7 +39,11 @@ requester.fetch = ({ url, method, body, param, option }) => {
             arg.body = body
         } else {
             arg.headers['Content-Type'] = 'application/json'
-            arg.body = JSON.stringify(body)
+
+            arg.body = JSON.stringify({
+                client: config.client,
+                ...body,
+            })
         }
     }
 
@@ -59,7 +64,10 @@ requester.fetch = ({ url, method, body, param, option }) => {
     }
 
     if (param) {
-        url += (url.indexOf('?') !== 0? '?' : '&') + Object.keys(param).map(k => `${k}=${param[k]}`).join('&')
+        url += (url.indexOf('?') !== 0? '?' : '&') + Object.keys({
+            client: config.client,
+            ...param,
+        }).map(k => `${k}=${param[k]}`).join('&')
     }
 
     return fetch(url, arg).then((res) => {
