@@ -16,7 +16,8 @@ authener.simple = (req, res, next) => {
     if (token) {
         jwt.verify(token, (error, data) => {
             if (error) {
-                return next()
+                res.u.cookie('token', '')
+                return next(error)
             }
 
             req.user = data
