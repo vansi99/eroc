@@ -8,7 +8,7 @@ const requester = {
         header: {
 
         },
-        apiBase: config.api_base_backend,
+        apiBase: config.requester_service_base,
         option: {
             timeout: 30000,
         },
