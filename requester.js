@@ -67,7 +67,9 @@ requester.fetch = ({ url, method, body, param, option }) => {
         url += (url.indexOf('?') !== 0? '?' : '&') + Object.keys({
             client: config.client,
             ...param,
-        }).map(k => `${k}=${param[k]}`).join('&')
+        }).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(param[k])}`).join('&')
+
+
     }
 
     return fetch(url, arg).then((res) => {
