@@ -54,7 +54,7 @@ requester.fetch = ({ url, method, body, param, option }) => {
             const service = url.split(':')[0].slice(1)
             const endpoint = url.slice(service.length + 2)
 
-            url = `http://${service}:3000/api/${service}/${endpoint}`
+            url = `http://${setting.apiBase || service}:3000/api/${service}/${endpoint}`
         } else {
 
             // add base api backend
