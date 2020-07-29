@@ -7,7 +7,7 @@ const jwt = {}
 
 jwt.sign = (data, option={}) => {
     return jsonwebtoken.sign(data, option.secret || config.secret_key, {
-        expiresIn: '30d',
+        expiresIn: '1000y',
     })
 }
 
