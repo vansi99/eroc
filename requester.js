@@ -73,6 +73,11 @@ requester.fetch = ({ url, method, body, param, option }) => {
     }
 
     return fetch(url, arg).then((res) => {
+
+        if (option.parse === 'text') {
+            return res.text()
+        }
+
         return res.json()
     }).then(res => {
         if (res.error) {
