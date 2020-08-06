@@ -5,17 +5,13 @@ const config = require('../config')
 const slacker = {
 
     setting: {
-        hook: 'https://hooks.slack.com/services/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'
+        token: 'Bearer xoxb-2240935972-1278362662806-us43xS64D8Q5n1gLJwitDIyI'
     },
 }
 
 const setting = slacker.setting
 
 slacker.send = (message, option={}) => {
-
-    if (config.env !== 'pro') {
-        return console.log('disable report in dev')
-    }
 
     const body = option.raw || {
         channel: option.channel,
@@ -28,10 +24,20 @@ slacker.send = (message, option={}) => {
         }]
     }
 
-    requester.post(setting.hook, body, { parse: 'text' }).then((res) => {
-        if (res !== 'ok') {
-            return console.error('send message to slack error:', res)
-        }
+    if (config.env !== 'pro') {
+        body.channel = '#test-report'
+    }
+
+    requester.post(
+        'https://slack.com/api/chat.postMessage',
+        body,
+        {
+            header: {
+                Authorization: setting.token,
+            },
+        },
+    ).then((res) => {
+        // console.log(res)
     }).catch((error) => {
         console.error('send message to slack error:', error)
     })
