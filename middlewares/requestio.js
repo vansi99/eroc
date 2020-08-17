@@ -17,8 +17,28 @@ const createUtil = (req, res, next) => {
     return util
 }
 
+const genNextUrl = (data, req, res) => {
+
+    if (!Array.isArray(data)) {
+        return ''
+    }
+
+    const limit = +req.getParam('limit', res.u.paging)
+    const offset = +req.getParam('offset', 0) + limit
+    const query = { ...req.query }
+
+    if (data.length < limit) {
+        return ''
+    }
+    
+    query.offset = offset
+
+    return `${req.originalUrl.split('?')[0]}?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`
+}
 
 const requestio = (req, res, next) => {
+
+    res.u = createUtil(res, res, next)
 
     req.getParam = (key, defaultValue) => {
         const value = [req.body[key], req.query[key], req.params[key], defaultValue].find(v => v !== undefined)
@@ -43,22 +63,27 @@ const requestio = (req, res, next) => {
     }
 
     res.success = (data, option) => {
-        const resopnse = {}
+        const response = {}
 
         if (!option) {
             option = {}
         }
 
         if (option.meta) {
-            resopnse.meta = option.meta
+            response.meta = option.meta
         }
 
         if (data) {
-            resopnse.data = data
+            response.data = data
+        }
+
+        if (res.u.paging) {
+            response.meta = response.meta || {}
+            response.meta.next = genNextUrl(data, req, res)
         }
 
         res.status(option.code || 200)
-        res.json(resopnse)
+        res.json(response)
     }
 
     res.error = (error, option={}) => {
@@ -85,9 +110,8 @@ const requestio = (req, res, next) => {
         }
     }
 
-    res.u = createUtil(res, res, next)
-
     next()
 }
+
 
 module.exports = requestio
