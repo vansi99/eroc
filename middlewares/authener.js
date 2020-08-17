@@ -11,7 +11,7 @@ const authener = {
 }
 
 authener.simple = (req, res, next) => {
-    const token = req.cookies.token || req.headers.token
+    const token = req.headers.token || req.cookies.token
 
     if (token) {
         jwt.verify(token, (error, data) => {
