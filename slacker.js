@@ -13,14 +13,17 @@ const setting = slacker.setting
 
 slacker.send = (message, option={}) => {
 
+    if (typeof message === 'object') {
+        option = message
+    }
+
     const body = option.raw || {
         channel: option.channel,
-        attachments: [{
+        attachments: option.attachments || [{
             color: option.color || '#00c0ef',
             title: option.title || '',
             text: message || '',
-            footer: 'DC Slack API',
-            // ts: 0,
+            footer: option.footer || 'Dichung Slack API',
         }]
     }
 
