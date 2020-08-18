@@ -11,7 +11,7 @@ const slacker = {
 
 const setting = slacker.setting
 
-slacker.send = (message, option={}) => {
+slacker.send = async (message, option={}) => {
 
     if (typeof message === 'object') {
         option = message
@@ -31,7 +31,7 @@ slacker.send = (message, option={}) => {
         body.channel = '#test-report'
     }
 
-    requester.post(
+    return requester.post(
         'https://slack.com/api/chat.postMessage',
         body,
         {
@@ -41,6 +41,7 @@ slacker.send = (message, option={}) => {
         },
     ).then((res) => {
         // console.log(res)
+        return res
     }).catch((error) => {
         console.error('send message to slack error:', error)
     })
