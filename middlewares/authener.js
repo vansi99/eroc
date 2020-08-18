@@ -28,77 +28,69 @@ authener.simple = (req, res, next) => {
     }
 }
 
-authener.gateway = (req, res, next) => {
+authener.ui = (req, res, next) => {
 
-    const token = req.cookies.token || req.headers.token
+    const token = req.headers.token || req.cookies.token
 
     if (!token) {
         return res.redirect(`/login?next=${req.originalUrl}`)
-    } else {
+    }
 
-        jwt.verify(token, (error, data) => {
-            let needReload = false
+    jwt.verify(token, (error, data) => {
+        let needReload = false
 
-            if (error) {
+        if (error) {
+            if (error.name !== 'TokenExpiredError') {
                 return res.redirect(`/login?next=${req.originalUrl}&error=${error.message}`)
             }
+            
+            needReload = true
+            data = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString())
+        }
 
-            if (authener.force.logouts.has(data._id)) {
-                authener.force.logouts.delete(data._id)
-                res.u.cookie('token', '')
+        if (authener.force.logouts.has(data._id)) {
+            authener.force.logouts.delete(data._id)
+            res.u.cookie('token', '')
+            return res.redirect(`/login?next=${req.originalUrl}`)
+        }
 
-                return res.redirect(`/login?next=${req.originalUrl}`)
-            }
+        if (authener.force.reloads.has(data._id)) {
+            authener.force.reloads.delete(data._id)
+            needReload = true
+        }
 
-            if (authener.force.reloads.has(data._id)) {
-                authener.force.reloads.delete(data._id)
-                needReload = true
-            }
+        if (Math.floor(Date.now() / 1000) - RELOAD_TOKEN_TIME_S > data.iat || needReload) {
+            requester.get(`$user:v1/users/token`, { token }).then(({ data }) => {
 
-            if (Math.floor(Date.now() / 1000) - RELOAD_TOKEN_TIME_S > data.iat || needReload) {
-                requester.get(`$user:v1/users/${data._id}/token`, {
-                    token,
-                }).then(({ data }) => {
+                if (!data || !data.token) {
+                    res.u.cookie('token', '')
+                    return next('error during reload token')
+                }
 
-                    if (!data || !data.token) {
+                res.u.cookie('token', data.token)
 
-                        // logout user
+                jwt.verify(data.token, (error, data) => {
+                    if (error) {
                         res.u.cookie('token', '')
-
-                        return next('error during reload token')
+                        return next(error)
                     }
 
-                    res.u.cookie('token', data.token)
-
-                    jwt.verify(data.token, (error, data) => {
-                        if (error) {
-
-                            // logout user
-                            res.u.cookie('token', '')
-
-                            return next(error)
-                        }
-
-                        req.user = data
-                        res.locals.pass.user = data
-                        next()
-                    })
-                }).catch((error) => {
-                    
-                    // logout user
-                    res.u.cookie('token', '')
-
-                    next(error)
+                    req.user = data
+                    res.locals.pass.user = data
+                    next()
                 })
+            }).catch((error) => {
+                res.u.cookie('token', '')
+                next(error)
+            })
 
-                return
-            }
+            return
+        }
 
-            req.user = data
-            res.locals.pass.user = data
-            next()
-        })
-    }
+        req.user = data
+        res.locals.pass.user = data
+        next()
+    })
 }
 
 

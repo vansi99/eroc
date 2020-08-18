@@ -18,17 +18,23 @@ jwt.verify = (token, option={}, done) => {
         option = {}
     }
 
-    return new Promise((resolve, reject) => {
+    const promise = new Promise((resolve, reject) => {
         jsonwebtoken.verify(token, option.secret || config.secret_key, (error, data) => {
             if (error) {
-                done && done(error)
                 reject(error)
             }
 
-            done && done(null, data)
             resolve(data)
         })
     })
+
+    if (!done) {
+        return promise
+    } else {
+        promise.then((data) => {
+            done(null, data)
+        }).catch(done)
+    }
 }
 
 module.exports = jwt
