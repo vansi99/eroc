@@ -1,33 +1,24 @@
-const authorer = {}
+const authorer = {
 
+    handle: {},
+}
 
-authorer.role = (roles, reject) => {
+const handle = authorer.handle
 
-    roles = roles.split(' ')
+handle.checkRole = (user, roles) => {
+    if (!user || !Array.isArray(user.roles)) {
+        return
+    }
+
+    return roles.find(r => user.roles.indexOf(r) !== -1)
+}
+
+authorer.role = (role, reject) => {
+
+    const roles = role.split(' ').filter(r => r)
 
     return (req, res, next) => {
-        const user = req.user
-
-        if (!user || !Array.isArray(user.roles)) {
-            if (reject) {
-                return reject(req, res, next)
-            } else {
-                return res.error(
-                    {
-                        message: '401 Unauthorized',
-                    },
-                    {
-                        code: 401,
-                    }
-                )
-            }
-        }
-
-        const accept = roles.find((r) => {
-            return user.roles.indexOf(r) !== -1
-        })
-
-        if (!accept) {
+        if (!handle.checkRole(req.user, roles)) {
             if (reject) {
                 return reject(req, res, next)
             } else {
@@ -43,7 +34,7 @@ authorer.role = (roles, reject) => {
             }
         }
 
-        next()
+        return next()
     }
 }
 

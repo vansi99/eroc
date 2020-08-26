@@ -1,6 +1,75 @@
+const path = require('path')
 const express = require('express')
+const cors = require('cors')
+const cookieParser = require('cookie-parser')
+const exphbs = require('express-handlebars')
+
+const config = require('../config')
+const requestio = require('./middlewares/requestio')
+const authener = require('./middlewares/authener')
+
 
 const core = {}
+
+core.createApplication = (middle) => {
+    const app = express()
+
+    const hbs = exphbs.create({
+        extname: 'html',
+    })
+
+    // view engine
+    app.engine('html', hbs.engine)
+    app.set('views', path.join(__dirname, 'views'))
+    app.set('view engine', 'html')
+
+    app.use(requestio)
+    app.use(express.json())
+    app.use(cookieParser())
+    app.use(cors())
+    app.use(authener.simple)
+
+    if (middle) {
+        middle(app)
+    }
+
+    // catch 404
+    app.use((req, res, next) => {
+        return res.error(
+            {
+                message: '404 Not found',
+                service: config.service,
+                env: config.env,
+            },
+            {
+                code: 404,
+            },
+        )
+    })
+
+    // top level handle exception
+    app.use((error, req, res, next) => {
+        // handle express error
+        // error throw from sync handle and next(err)
+
+        const response = {
+            message: error.message || error || 'server error',
+            service: config.service,
+            env: config.env,
+            level: 'fatal',
+        }
+
+        if (typeof error === 'object') {
+            Object.assign(response, error)
+        }
+
+        console.error(response)
+
+        return res.error(response)
+    })
+
+    return app
+}
 
 
 core.Router = (...params) => {

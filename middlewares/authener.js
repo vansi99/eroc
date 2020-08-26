@@ -7,25 +7,29 @@ const authener = {
     force: {
         reloads: new Set(),
         logouts: new Set(),
+    },
+
+    handle: {}
+}
+
+const handle = authener.handle
+
+handle.getUser = async (req) => {
+    const token = req.headers.token || req.cookies.token
+
+    if (token) {
+        return await jwt.verify(token)
     }
 }
 
 authener.simple = (req, res, next) => {
-    const token = req.headers.token || req.cookies.token
-
-    if (token) {
-        jwt.verify(token, (error, data) => {
-            if (error) {
-                res.u.cookie('token', '')
-                return next(error)
-            }
-
-            req.user = data
-            next()
-        })
-    } else {
+    const token = handle.getUser(req).then((user) => {
+        req.user = user
         next()
-    }
+    }).catch((error) => {
+        res.u.cookie('token', '')
+        return next(error)
+    })
 }
 
 authener.ui = (req, res, next) => {
