@@ -16,15 +16,20 @@ core.createApplication = (middle) => {
 
     const hbs = exphbs.create({
         extname: 'html',
+        helpers: {
+            stringify: (data) => {
+                return JSON.stringify(data)
+            }
+        }
     })
 
     // view engine
     app.engine('html', hbs.engine)
-    app.set('views', path.join(__dirname, 'views'))
+    app.set('views', path.join(__dirname, '../views'))
     app.set('view engine', 'html')
 
     app.use(requestio)
-    app.use(express.json())
+    app.use(express.json({ limit: '10mb' }))
     app.use(cookieParser())
     app.use(cors())
     app.use(authener.simple)
