@@ -30,6 +30,7 @@ core.createApplication = (middle) => {
 
     app.use(requestio)
     app.use(express.json({ limit: '10mb' }))
+    app.use(express.urlencoded({ extended: false }))
     app.use(cookieParser())
     app.use(cors())
     app.use(authener.simple)
