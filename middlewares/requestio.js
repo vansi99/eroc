@@ -42,6 +42,7 @@ const genNextUrl = (data, req, res) => {
 const requestio = (req, res, next) => {
 
     res.u = createUtil(res, res, next)
+    req.u = res.u
 
     req.getParam = (key, defaultValue) => {
         const value = [req.body[key], req.query[key], req.params[key], defaultValue].find(v => v !== undefined)

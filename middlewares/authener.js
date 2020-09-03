@@ -1,5 +1,6 @@
 const jwt = require('../../core/jwt')
 const requester = require('../../core/requester')
+const config = require('../../config')
 
 const RELOAD_TOKEN_TIME_S = 30 * 86400
 
@@ -24,12 +25,16 @@ handle.getUser = async (req) => {
 
 authener.simple = (req, res, next) => {
     const token = handle.getUser(req).then((user) => {
-        req.user = user
+        req.u.user = user
         next()
     }).catch((error) => {
         res.u.cookie('token', '')
         return next(error)
     })
+
+    if (req.headers.client && config.clients) {
+        req.u.client = config.clients.find(c => c.key === req.headers.client)
+    }
 }
 
 authener.ui = (req, res, next) => {
