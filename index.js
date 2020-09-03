@@ -27,7 +27,7 @@ core.createApplication = (middle) => {
 
     // view engine
     app.engine('html', hbs.engine)
-    app.set('views', path.join(__dirname, '../views'))
+    app.set('views', path.join(__dirname, '../../views'))
     app.set('view engine', 'html')
 
     app.use(requestio)

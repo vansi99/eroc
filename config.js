@@ -6,6 +6,15 @@ const config = {}
 const env = dotenv.config({ path: path.join(__dirname, '../../.env') }).parsed
 const envOverride = dotenv.config({ path: path.join(__dirname, '../../.env.override') }).parsed
 
+config.clients = [
+    {
+        key: 'internal.c2hvdml0eQ',
+        name: 'internal',
+    },
+]
+
+config.client = 'internal.c2hvdml0eQ'
+
 // load env from .env
 Object.keys(env || {}).forEach((key) => {
     config[key.toLowerCase()] = env[key]
@@ -20,21 +29,27 @@ Object.keys(envOverride || {}).forEach((key) => {
     process.env[key] = envOverride[key]
 })
 
-config.mongo_option = {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-    useCreateIndex: true,
+if (config.mongo_uri) {
+    const mongoose = require('mongoose')
 
-    auth: {
-        authSource: 'admin',
-    },
+    mongoose.set('useFindAndModify', false)
+    mongoose.connect(config.mongo_uri, {
+        useUnifiedTopology: true,
+        useNewUrlParser: true,
+        useCreateIndex: true,
+    
+        auth: {
+            authSource: 'admin',
+        },
+    })
+
+    config.connection = mongoose.connection
+    config.connection.on('error', error => console.error('BOOT: mongodb connect error', error))
+    config.connection.once('open', () => console.log('BOOT: mongodb connected'))
+    
 }
 
-config.clients = [
-    {
-        key: 'internal.c2hvdml0eQ',
-        name: 'internal',
-    },
-]
+console.log(`BOOT: env = ${config.env}`, config.project_path)
+
 
 module.exports = config
