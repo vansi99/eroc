@@ -6,7 +6,7 @@ const config = require('../config')
 const requester = {
     setting: {
         header: {
-
+            client: config.client || 'internal.c2hvdml0eQ',
         },
         apiBase: config.requester_service_base,
         option: {
@@ -39,11 +39,7 @@ requester.fetch = ({ url, method, body, param, option }) => {
             arg.body = body
         } else {
             arg.headers['Content-Type'] = 'application/json'
-
-            arg.body = JSON.stringify({
-                client: config.client,
-                ...body,
-            })
+            arg.body = JSON.stringify(body)
         }
     }
 
