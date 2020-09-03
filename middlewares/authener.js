@@ -84,7 +84,7 @@ authener.ui = (req, res, next) => {
                         return next(error)
                     }
 
-                    req.user = data
+                    req.u.user = data
                     res.locals.pass.user = data
                     next()
                 })
@@ -96,7 +96,7 @@ authener.ui = (req, res, next) => {
             return
         }
 
-        req.user = data
+        req.u.user = data
         res.locals.pass.user = data
         next()
     })

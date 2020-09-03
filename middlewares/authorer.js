@@ -18,7 +18,7 @@ authorer.role = (role, reject) => {
     const roles = role.split(' ').filter(r => r)
 
     return (req, res, next) => {
-        if (!handle.checkRole(req.user, roles)) {
+        if (!handle.checkRole(req.u.user, roles)) {
             if (reject) {
                 return reject(req, res, next)
             } else {
