@@ -1,4 +1,4 @@
-const config = require('../config')
+const config = require('./config')
 const requester = require('./requester')
 
 const socketer = {

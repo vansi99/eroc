@@ -1,6 +1,6 @@
 const jwt = require('../../core/jwt')
 const requester = require('../../core/requester')
-const config = require('../../config')
+const config = require('.././config')
 
 const RELOAD_TOKEN_TIME_S = 30 * 86400
 

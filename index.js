@@ -4,12 +4,14 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const exphbs = require('express-handlebars')
 
-const config = require('../config')
+const config = require('./config')
 const requestio = require('./middlewares/requestio')
 const authener = require('./middlewares/authener')
 
 
 const core = {}
+
+core.config = config
 
 core.createApplication = (middle) => {
     const app = express()
