@@ -49,7 +49,7 @@ if (config.mongo_uri) {
     
 }
 
-console.log(`BOOT: env = ${config.env}`, config.project_path)
+console.log(`BOOT: env = ${config.env}`)
 
 
 module.exports = config
