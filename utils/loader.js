@@ -1,10 +1,10 @@
-const core = require('..')
+const eroc = require('..')
 
 const loader = {}
 
 
 loader.loadPage = (page) => {
-    const router = core.Router()
+    const router = eroc.Router()
 
     Object.keys(page).forEach((key) => {
         let p = page[key]

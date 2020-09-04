@@ -9,11 +9,11 @@ const requestio = require('./middlewares/requestio')
 const authener = require('./middlewares/authener')
 
 
-const core = {}
+const eroc = {}
 
-core.config = config
+eroc.config = config
 
-core.createApplication = (middle) => {
+eroc.createApplication = (middle) => {
     const app = express()
 
     const hbs = exphbs.create({
@@ -80,7 +80,7 @@ core.createApplication = (middle) => {
 }
 
 
-core.Router = (...params) => {
+eroc.Router = (...params) => {
     const router = express.Router(...params)
     const methods = ['get', 'post', 'put', 'patch', 'delete', 'head', 'option', 'use', 'all']
 
@@ -106,8 +106,8 @@ core.Router = (...params) => {
     return router
 }
 
-core.ui = (template, command={}) => {
-    const router = core.Router()
+eroc.ui = (template, command={}) => {
+    const router = eroc.Router()
 
     router.get('/', async (req, res, next) => {
         const handle = command.context
@@ -155,4 +155,4 @@ core.ui = (template, command={}) => {
 }
 
 
-module.exports = core
+module.exports = eroc
