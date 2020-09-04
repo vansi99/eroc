@@ -1,11 +1,9 @@
 {
-  "name": "core",
-  "version": "1.0.0",
+  "name": "eroc",
+  "version": "1.0.1",
   "main": "index.js",
-  "repository": "git@gitlab.com:dichungvn/core.git",
-  "author": "dev.portal <dev.portal@dichung.vn>",
+  "author": "Shovity <shovity@gmail.com",
   "license": "MIT",
-  "private": true,
   "dependencies": {
     "bull": "^3.18.0",
     "cookie-parser": "^1.4.5",
@@ -17,7 +15,7 @@
     "http-proxy": "^1.18.1",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.1",
-    "mongose": "^0.0.2-security",
+    "mongoose": "^5.10.3",
     "node-fetch": "^2.6.0"
   }
 }
