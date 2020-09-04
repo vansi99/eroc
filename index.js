@@ -3,13 +3,16 @@ const express = require('express')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const exphbs = require('express-handlebars')
+const mongoose = require('mongoose')
 
 const config = require('./config')
 const requestio = require('./middlewares/requestio')
 const authener = require('./middlewares/authener')
 
 
-const eroc = {}
+const eroc = {
+    mongoose
+}
 
 eroc.config = config
 
@@ -47,6 +50,8 @@ eroc.createApplication = (middle) => {
             {
                 message: '404 Not found',
                 service: config.service,
+                url: req.originalUrl,
+                method: req.method,
                 env: config.env,
             },
             {
@@ -63,6 +68,8 @@ eroc.createApplication = (middle) => {
         const response = {
             message: error.message || error || 'server error',
             service: config.service,
+            url: req.originalUrl,
+            method: req.method,
             env: config.env,
             level: 'fatal',
         }

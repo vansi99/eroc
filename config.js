@@ -33,6 +33,7 @@ if (config.mongo_uri) {
     const mongoose = require('mongoose')
 
     mongoose.set('useFindAndModify', false)
+    
     mongoose.connect(config.mongo_uri, {
         useUnifiedTopology: true,
         useNewUrlParser: true,
@@ -43,9 +44,8 @@ if (config.mongo_uri) {
         },
     })
 
-    config.connection = mongoose.connection
-    config.connection.on('error', error => console.error('BOOT: mongodb connect error', error))
-    config.connection.once('open', () => console.log('BOOT: mongodb connected'))
+    mongoose.connection.on('error', error => console.error('BOOT: mongodb connect error', error))
+    mongoose.connection.once('open', () => console.log('BOOT: mongodb connected'))
     
 }
 
