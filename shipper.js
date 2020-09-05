@@ -1,11 +1,19 @@
 const mongodb = require('mongodb')
 
+const config = require('./config')
+
+
 const shipper = {
     models: [],
     interval: null,
-    delay: 3600000,
-    warehouseUrl: 'mongodb://shovity:ytivohs@warehouse:27017',
+
+    setting: {
+        delay: config.shipper_delay || 3600000,
+        mongo_uri: config.shipper_mongo_uri,
+    },
 }
+
+const setting = shipper.setting
 
 
 shipper.add = (model) => {
@@ -19,10 +27,10 @@ shipper.ship = () => {
         return
     }
 
-    const threshold = Date.now() - shipper.delay
+    const threshold = Date.now() - setting.delay
 
     // connect to warehouse
-    mongodb.MongoClient.connect(shipper.warehouseUrl, { useUnifiedTopology: true }).then((client) => {
+    mongodb.MongoClient.connect(setting.mongo_uri, { useUnifiedTopology: true }).then((client) => {
 
         shipper.models.forEach((model) => {
             const collectionName = model.collection.collectionName
@@ -57,12 +65,16 @@ shipper.ship = () => {
 }
 
 shipper.start = () => {
+    if (setting.mongo_uri) {
+        return console.error(`shipper: misisng config.shipper_mongo_uri`)
+    }
+
     if (shipper.interval !== null) {
         clearInterval(shipper.interval)
         shipper.interval = null
     }
 
-    shipper.interval = setInterval(shipper.ship, shipper.delay)
+    shipper.interval = setInterval(shipper.ship, setting.delay)
 }
 
 

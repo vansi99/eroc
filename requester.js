@@ -6,7 +6,7 @@ const config = require('./config')
 const requester = {
     setting: {
         header: {
-            client: config.client || 'internal.c2hvdml0eQ',
+            client: config.client || '',
         },
         apiBase: config.requester_service_base,
         option: {

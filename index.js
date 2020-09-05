@@ -1,3 +1,4 @@
+const http = require('http')
 const path = require('path')
 const express = require('express')
 const cors = require('cors')
@@ -82,6 +83,16 @@ eroc.createApplication = (middle) => {
 
         return res.error(response)
     })
+
+    app.start = () => {
+        const server = http.createServer(app)
+
+        server.listen(config.port, () => {
+            console.log(`BOOT: server ${config.service} running at port ${config.port}`)
+        })
+
+        return server
+    }
 
     return app
 }

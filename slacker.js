@@ -5,7 +5,7 @@ const config = require('./config')
 const slacker = {
 
     setting: {
-        token: 'Bearer xoxb-2240935972-1278362662806-us43xS64D8Q5n1gLJwitDIyI'
+        token: config.slacker_token,
     },
 }
 
@@ -23,7 +23,7 @@ slacker.send = async (message, option={}) => {
             color: option.color || '#00c0ef',
             title: option.title || '',
             text: message || '',
-            footer: option.footer || 'Dichung Slack API',
+            footer: option.footer || 'Slack API',
         }]
     }
 
