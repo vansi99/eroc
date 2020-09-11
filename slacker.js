@@ -36,7 +36,7 @@ slacker.send = async (message, option={}) => {
         body,
         {
             header: {
-                Authorization: setting.token,
+                Authorization: `Bearer ${setting.token}`,
             },
         },
     ).then((res) => {
