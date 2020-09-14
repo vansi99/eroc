@@ -5,6 +5,7 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const exphbs = require('express-handlebars')
 const mongoose = require('mongoose')
+const expressListEndpoints = require('express-list-endpoints')
 
 const config = require('./config')
 const requestio = require('./middlewares/requestio')
@@ -88,11 +89,18 @@ eroc.createApplication = (middle) => {
         const server = http.createServer(app)
 
         server.listen(config.port, () => {
-            console.log(`BOOT: server ${config.service} running at port ${config.port}`)
+            console.log(`BOOT: 🍑 server ${config.service} running at port ${config.port}`)
         })
 
         return server
     }
+
+    console.log('BOOT: 🧬 list apis')
+    expressListEndpoints(app).forEach((api) => {
+        api.methods.forEach((m) => {
+            console.log(`    ${m.padEnd(6)} ${api.path}`)
+        })
+    })
 
     return app
 }

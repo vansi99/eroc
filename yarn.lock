@@ -250,6 +250,11 @@ express-handlebars@^5.1.0:
     graceful-fs "^4.2.4"
     handlebars "^4.7.6"
 
+express-list-endpoints@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/express-list-endpoints/-/express-list-endpoints-5.0.0.tgz#819b6ff0fb96d975b02cacb704757b200c4f4dc3"
+  integrity sha512-bjypzWA7AQ64VNLbQ3GqwDzLxqK1NIHFRJvFDb7wg0S7YwquI8l8XZsmF0yiEA22gN+p+G6+1KDcXxb6Dn3OaA==
+
 express@^4.17.1:
   version "4.17.1"
   resolved "https://registry.yarnpkg.com/express/-/express-4.17.1.tgz#4491fc38605cf51f8629d39c2b5d026f98a4c134"
