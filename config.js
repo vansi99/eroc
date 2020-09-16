@@ -43,7 +43,7 @@ Object.keys(envOverride || {}).forEach((key) => {
 
 // merge project config.js
 if (fs.existsSync(path.join(__dirname, '../../config.js'))) {
-    Object.assign(config, require('../../config'))
+    require('../../config')(config)
 }
 
 // connect mongoose if truly config.mongo_uri
