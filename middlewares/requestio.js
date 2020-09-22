@@ -74,8 +74,13 @@ const requestio = (req, res, next) => {
         },
         role: async (role) => {
             const roles = role.split(' ').filter(r => r)
-            if (!authorer.handle.checkRole(roles)) {
+            const user = await authener.handle.getUser(req)
 
+            if (!user) {
+                throw 'require login'
+            }
+
+            if (!authorer.handle.checkRole(user, roles)) {
                 throw {
                     message: '403 Forbidden',
                     require: roles,
