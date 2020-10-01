@@ -100,7 +100,7 @@ const requestio = (req, res, next) => {
             response.meta = option.meta
         }
 
-        if (data) {
+        if (data !== undefined) {
             response.data = data
         }
 
