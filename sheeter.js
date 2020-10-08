@@ -6,11 +6,12 @@ const { GoogleSpreadsheet } = require('google-spreadsheet')
 
 const config = require('./config')
 
+!config.sheeter_credentials && console.error('sheeter: missing config.sheeter_credentials')
 
 const sheeter = {
 
     setting: {
-        credentials: JSON.parse(config.sheeter_credentials)
+        credentials: JSON.parse(config.sheeter_credentials || '{}')
     },
 }
 
