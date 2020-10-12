@@ -52,18 +52,10 @@ kafker.sub = async (topic, handle, option) => {
     option = Object.assign({
         group: `${config.service}:${topic}`,
         fromBeginning: true,
-
-        restartOnFailure: async () => {
-            return false
-        },
     }, option)
 
     const consumer = kafker.client.consumer({
         groupId: option.group,
-
-        retry: {
-            restartOnFailure: option.restartOnFailure,
-        },
     })
 
     kafker.consumer[topic] = {
