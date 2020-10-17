@@ -81,6 +81,7 @@ eroc.createApplication = (middle) => {
         }
 
         console.error(response)
+        console.error(error)
 
         return res.error(response)
     })
