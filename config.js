@@ -50,21 +50,27 @@ if (fs.existsSync(path.join(__dirname, '../../config.js'))) {
 if (config.mongo_uri) {
     const mongoose = require('mongoose')
 
+    const connect = () => {
+        mongoose.connect(config.mongo_uri, {
+            useUnifiedTopology: true,
+            useNewUrlParser: true,
+            useCreateIndex: true,
+        
+            auth: {
+                authSource: 'admin',
+            },
+        }).then(() => {
+            console.log(`mongo: 🍱 mongodb connected - mongo_uri=${config.mongo_uri}`)
+        }).catch((error) => {
+            console.error(error)
+            console.error('mongo: connect to mongod error, trying to reconnect...')
+            setTimeout(connect, 3000)
+        })
+    }
+
     mongoose.set('useFindAndModify', false)
     
-    mongoose.connect(config.mongo_uri, {
-        useUnifiedTopology: true,
-        useNewUrlParser: true,
-        useCreateIndex: true,
-    
-        auth: {
-            authSource: 'admin',
-        },
-    })
-
-    mongoose.connection.on('error', error => console.error('BOOT: mongodb connect error', error))
-    mongoose.connection.once('open', () => console.log(`BOOT: 🍱 mongodb connected - mongo_uri=${config.mongo_uri}`))
-    
+    connect()
 }
 
 console.log(`BOOT: 🚀 load config done - env=${config.env}`)
