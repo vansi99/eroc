@@ -96,12 +96,12 @@ eroc.createApplication = (middle) => {
         return server
     }
 
-    console.log('eroc: 🧬 list apis')
-    expressListEndpoints(app).forEach((api) => {
-        api.methods.forEach((m) => {
-            console.log(`    ${m.padEnd(6)} ${api.path}`)
+    if (config.api_monitor) {
+        console.log('eroc: 🧬 list apis')
+        expressListEndpoints(app).forEach((api) => {
+            api.methods.forEach((m) => console.log(`    ${m.padEnd(6)} ${api.path}`))
         })
-    })
+    }
 
     return app
 }
