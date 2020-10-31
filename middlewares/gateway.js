@@ -41,7 +41,7 @@ router.use('/:service', (req, res, next) => {
 
         if (config.env === 'loc') {
             // pass to dev portal service
-            console.log(`proxy pass to develop server: ${req.originalUrl}`)
+            console.log(`gateway: proxy pass to develop server: ${req.originalUrl}`)
             proxy.web(req, res, { target: `http://dev.portal.dichung.vn/api/${service}` }, (error) => {
                 return next(error)
             })

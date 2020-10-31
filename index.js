@@ -90,13 +90,13 @@ eroc.createApplication = (middle) => {
         const server = http.createServer(app)
 
         server.listen(config.port, () => {
-            console.log(`BOOT: 🍑 server ${config.service} running at port ${config.port}`)
+            console.log(`eroc: 🍑 server ${config.service} running at port ${config.port}`)
         })
 
         return server
     }
 
-    console.log('BOOT: 🧬 list apis')
+    console.log('eroc: 🧬 list apis')
     expressListEndpoints(app).forEach((api) => {
         api.methods.forEach((m) => {
             console.log(`    ${m.padEnd(6)} ${api.path}`)

@@ -43,7 +43,7 @@ slacker.send = async (message, option={}) => {
         // console.log(res)
         return res
     }).catch((error) => {
-        console.error('send message to slack error:', error)
+        console.error('slacker: send message to slack error:', error)
     })
 }
 

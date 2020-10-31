@@ -73,7 +73,7 @@ if (config.mongo_uri) {
     connect()
 }
 
-console.log(`BOOT: 🚀 load config done - env=${config.env}`)
+console.log(`eroc: 🚀 load config done - env=${config.env}`)
 
 
 module.exports = config

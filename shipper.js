@@ -55,9 +55,9 @@ shipper.ship = () => {
                 })
                 
                 bulk.execute().then(() => {
-                    console.log(`Ship ${docs.length} documents of ${databaseName}.${collectionName} done`)
+                    console.log(`shipper: ship ${docs.length} documents of ${databaseName}.${collectionName} done`)
                 }).catch((error) => {
-                    console.error(`Ship ${docs.length} documents of ${databaseName}.${collectionName} error`, error)
+                    console.error(`shipper: ship ${docs.length} documents of ${databaseName}.${collectionName} error`, error)
                 })
             }).catch(console.error)
         })
