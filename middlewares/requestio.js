@@ -1,7 +1,6 @@
 const http = require('http')
 
-const authener = require('./authener')
-const authorer = require('./authorer')
+const ruler = require('../ruler')
 
 
 const createUtil = (req, res, next) => {
@@ -68,19 +67,19 @@ const requestio = (req, res, next) => {
 
     req.auth = {
         login: async () => {
-            if (!await authener.handle.getUser(req)) {
+            if (!await ruler.get(req)) {
                 throw 'require login'
             }
         },
         role: async (role) => {
             const roles = role.split(' ').filter(r => r)
-            const user = await authener.handle.getUser(req)
+            const user = await ruler.get(req)
 
             if (!user) {
                 throw 'require login'
             }
 
-            if (!authorer.handle.checkRole(user, roles)) {
+            if (!ruler.check(user, roles)) {
                 throw {
                     message: '403 Forbidden',
                     require: roles,

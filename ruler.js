@@ -6,7 +6,15 @@ const config = require('./config')
 
 const ruler = {}
 
-ruler.gate = ({ api, weak }={}) => {
+ruler.get = async (req) => {
+    const token = req.headers.token || req.cookies.token
+
+    if (token) {
+        return await jwt.verify(token)
+    }
+}
+
+ruler.gate = (option={}) => {
     const rediser = require('eroc/rediser')
 
     return (req, res, next) => {
@@ -15,7 +23,7 @@ ruler.gate = ({ api, weak }={}) => {
             const token = req.headers.token || req.cookies.token
 
             if (!token) {
-                if (weak) {
+                if (option.weak) {
                     return next()
                 }
 
@@ -78,7 +86,7 @@ ruler.detect = () => {
     }
 }
 
-ruler.check = (user, roles, permissions) => {
+ruler.check = (user, roles) => {
     if (!user || !Array.isArray(user.roles)) {
         return
     }
