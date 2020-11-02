@@ -9,7 +9,7 @@ const expressListEndpoints = require('express-list-endpoints')
 
 const config = require('./config')
 const requestio = require('./middlewares/requestio')
-const authener = require('./middlewares/authener')
+const ruler = require('./ruler')
 
 
 const eroc = {
@@ -40,7 +40,7 @@ eroc.createApplication = (middle) => {
     app.use(express.urlencoded({ extended: false }))
     app.use(cookieParser())
     app.use(cors())
-    app.use(authener.simple)
+    app.use(ruler.detect())
 
     if (middle) {
         middle(app)

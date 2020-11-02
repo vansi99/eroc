@@ -17,7 +17,7 @@ socketer.setting = setting
  * Emitter all socket by default
  * @param option { sid, uid, room }
  */
-socketer.emit = (event, data, option={}) => {
+socketer.emit = async (event, data, option={}) => {
 
     const body = {
         event: event,
@@ -40,7 +40,7 @@ socketer.emit = (event, data, option={}) => {
         body.room = option.room
     }
 
-    return requester.post(setting.hook, body)
+    return await requester.post(setting.hook, body)
 }
 
 module.exports = socketer

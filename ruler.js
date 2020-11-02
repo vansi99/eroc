@@ -1,17 +1,36 @@
-const rediser = require('eroc/rediser')
 const requester = require('eroc/requester')
 
 const jwt = require('./jwt')
+const config = require('./config')
 
 
 const ruler = {}
 
-ruler.gate = () => {
+ruler.gate = ({ api, weak }={}) => {
+    const rediser = require('eroc/rediser')
+
     return (req, res, next) => {
-        
+
         const handle = async () => {
             const token = req.headers.token || req.cookies.token
-            req.u.user = await jwt.verify(token)
+
+            if (!token) {
+                if (weak) {
+                    return next()
+                }
+
+                if (option.api) {
+                    return res.error({ message: '401 Unauthorized' }, { code: 401 })
+                } else {
+                    return res.redirect('/login')
+                }
+            }
+
+            req.u.user = await jwt.verify(token).catch((error) => {
+                res.u.cookie('token', '')
+                return next(error)
+            })
+
             const tiat = await rediser.hget('user_tiat', req.u.user._id)
 
             if (req.u.user.iat < tiat) {
@@ -28,8 +47,28 @@ ruler.gate = () => {
                 }
             }
 
-            if (res.locals.pass) {
-                res.locals.pass.user = req.u.user
+            next()
+        }
+
+        handle().catch(next)
+    }
+}
+
+ruler.detect = () => {
+    return async (req, res, next) => {
+
+        const handle = async () => {
+            const token = req.headers.token || req.cookies.token
+
+            if (token) {
+                req.u.user = await jwt.verify(token).catch((error) => {
+                    res.u.cookie('token', '')
+                    return next(error)
+                })
+            }
+    
+            if (req.headers.client && config.clients) {
+                req.u.client = config.clients.find(c => c.key === req.headers.client)
             }
 
             next()
@@ -39,7 +78,7 @@ ruler.gate = () => {
     }
 }
 
-ruler.checkRole = (user, roles) => {
+ruler.check = (user, roles, permissions) => {
     if (!user || !Array.isArray(user.roles)) {
         return
     }
@@ -51,7 +90,7 @@ ruler.role = (role, reject) => {
     const roles = role.split(' ').filter(r => r)
 
     return (req, res, next) => {
-        if (!ruler.checkRole(req.u.user, roles)) {
+        if (!ruler.check(req.u.user, roles)) {
             return res.error({ message: '403 Forbidden', require: roles }, { code: 403 })
         }
 
