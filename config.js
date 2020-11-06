@@ -21,9 +21,12 @@ const path = require('path')
 const dotenv = require('dotenv')
 
 
-const config = {}
-const env = dotenv.config({ path: path.join(__dirname, '../../.env') }).parsed
-const envOverride = dotenv.config({ path: path.join(__dirname, '../../.env.override') }).parsed
+const config = {
+    app_dir: path.dirname(require.main.filename)
+}
+
+const env = dotenv.config({ path: path.join(config.app_dir, '.env') }).parsed
+const envOverride = dotenv.config({ path: path.join(config.app_dir, '.env.override') }).parsed
 
 // load .env
 Object.keys(env || {}).forEach((key) => {
@@ -42,8 +45,8 @@ Object.keys(envOverride || {}).forEach((key) => {
 })
 
 // merge project config.js
-if (fs.existsSync(path.join(__dirname, '../../config.js'))) {
-    require('../../config')(config)
+if (fs.existsSync(path.join(config.app_dir, 'config.js'))) {
+    require(path.join(config.app_dir, 'config.js'))(config)
 }
 
 // connect mongoose if truly config.mongo_uri

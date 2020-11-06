@@ -1,5 +1,6 @@
 const redis = require('redis')
-const config = require('eroc/config')
+
+const config = require('./config')
 
 
 const rediser = {
@@ -11,7 +12,7 @@ const rediser = {
 const client = rediser.client
 
 client.on('connect', () => {
-    console.log('rediser: 🐿 connected')
+    console.log(`rediser: 🐿 connected - rediser_uri=${config.rediser_uri}`)
 })
 
 rediser.cmd = async (...arg) => {

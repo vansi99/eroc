@@ -1,5 +1,4 @@
-const requester = require('eroc/requester')
-
+const requester = require('./requester')
 const jwt = require('./jwt')
 const config = require('./config')
 
