@@ -14,7 +14,7 @@ ruler.get = async (req) => {
 }
 
 ruler.gate = (option={}) => {
-    const rediser = require('eroc/rediser')
+    const rediser = require('./rediser')
 
     return (req, res, next) => {
 
@@ -51,6 +51,8 @@ ruler.gate = (option={}) => {
                     })
                 } else {
                     res.u.cookie('token', data.token)
+                    req.cookies.token = data.token
+                    req.headers.cookie = req.headers.cookie.replace(`token=${token}`, `token=${data.token}`)
                 }
             }
 
