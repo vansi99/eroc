@@ -105,8 +105,6 @@ ruler.detect = () => {
 
                 req.u.client = user.client
                 req.u.client.uid = user._id
-
-                console.log(req.u.client)
             }
 
             next()
