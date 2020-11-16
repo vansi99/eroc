@@ -77,7 +77,7 @@ ruler.detect = () => {
             }
     
             if (req.headers.client) {
-                let user = null
+                let user = {}
 
                 if (config.clients) {
                     user = {
@@ -85,7 +85,7 @@ ruler.detect = () => {
                     }
                 }
 
-                if (!user?.client) {
+                if (!user.client) {
                     const response = await requester.post('$user:in/query/User', {
                         findOne: {
                             'client.key': req.headers.client,
@@ -99,8 +99,39 @@ ruler.detect = () => {
                     user = response.data
                 }
 
-                if (!user) {
+                if (!user.client) {
                     throw 'client key not found'
+                }
+
+                req.u.client = user.client
+                req.u.client.uid = user._id
+            }
+
+            if (req.headers.partner) {
+                let user = {}
+
+                if (config.clients) {
+                    user = {
+                        client: config.clients.find(c => c.name === req.headers.name)
+                    }
+                }
+
+                if (!user.client) {
+                    const response = await requester.post('$user:in/query/User', {
+                        findOne: {
+                            'client.name': req.headers.partner,
+                            status: 'active',
+                        },
+                        select: {
+                            client: 1,
+                        }
+                    })
+
+                    user = response.data
+                }
+
+                if (!user.client) {
+                    throw 'partner name not found'
                 }
 
                 req.u.client = user.client
