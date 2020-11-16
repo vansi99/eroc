@@ -85,7 +85,7 @@ ruler.detect = () => {
                     }
                 }
 
-                if (!user) {
+                if (!user?.client) {
                     const response = await requester.post('$user:in/query/User', {
                         findOne: {
                             'client.key': req.headers.client,
