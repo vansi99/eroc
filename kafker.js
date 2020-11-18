@@ -7,7 +7,7 @@ const config = require('./config')
 const kafker = new event.Event()
 
 const setting = {
-    broker_uri: config.kafker_broker_uri,
+    broker_uri: config.kafker_broker_uri || '',
 }
 
 kafker.ready = false
