@@ -77,12 +77,16 @@ rediser.hget = async (key, name) => {
 
 rediser.hgetall = async (key) => {
     return new Promise((resolve, reject) => {
-        client.hgetall(key, (error, replys) => {
+        client.hgetall(key, (error, reply) => {
             if (error) {
                 return reject(error)
             }
 
-            return resolve(replys.map(reply => JSON.parse(reply)))
+            Object.keys(reply).forEach((k) => {
+                reply[k] = JSON.parse(reply[k])
+            })
+
+            return resolve(reply)
         })
     })
 }
