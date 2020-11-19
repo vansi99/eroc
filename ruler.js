@@ -29,6 +29,7 @@ ruler.gate = (option={}) => {
                 if (option.api) {
                     return res.error({ message: '401 Unauthorized' }, { code: 401 })
                 } else {
+                    res.u.cookie('token', '')
                     return res.redirect('/login')
                 }
             }
@@ -39,6 +40,15 @@ ruler.gate = (option={}) => {
             })
 
             const tiat = await rediser.hget('user_tiat', req.u.user._id)
+
+            if (!tiat) {
+                if (option.api) {
+                    return res.error('user tiat not found')
+                } else {
+                    res.u.cookie('token', '')
+                    return res.redirect('/login')
+                }
+            }
 
             if (req.u.user.iat < tiat) {
                 const { data } = await requester.get(`$user:v1/users/token`, { token })
@@ -85,7 +95,7 @@ ruler.detect = () => {
                     }
                 }
 
-                if (!user.client) {
+                if (!user?.client) {
                     const response = await requester.post('$user:in/query/User', {
                         findOne: {
                             'client.key': req.headers.client,
@@ -99,7 +109,7 @@ ruler.detect = () => {
                     user = response.data
                 }
 
-                if (!user.client) {
+                if (!user?.client) {
                     throw 'client key not found'
                 }
 
@@ -116,7 +126,7 @@ ruler.detect = () => {
                     }
                 }
 
-                if (!user.client) {
+                if (!user?.client) {
                     const response = await requester.post('$user:in/query/User', {
                         findOne: {
                             'client.name': req.headers.partner,
@@ -130,7 +140,7 @@ ruler.detect = () => {
                     user = response.data
                 }
 
-                if (!user.client) {
+                if (!user?.client) {
                     throw 'partner name not found'
                 }
 
