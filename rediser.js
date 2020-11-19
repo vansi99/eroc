@@ -34,14 +34,14 @@ rediser.get = async (key) => {
                 return reject(error)
             }
 
-            return resolve(reply)
+            return resolve(JSON.parse(reply))
         })
     })
 }
 
 rediser.set = async (key, value) => {
     return new Promise((resolve, reject) => {
-        client.set(key, value, (error, reply) => {
+        client.set(key, JSON.stringify(value), (error, reply) => {
             if (error) {
                 return reject(error)
             }
@@ -53,7 +53,7 @@ rediser.set = async (key, value) => {
 
 rediser.hset = async (key, name, value) => {
     return new Promise((resolve, reject) => {
-        client.hset(key, name, value, (error, reply) => {
+        client.hset(key, name, JSON.stringify(value), (error, reply) => {
             if (error) {
                 return reject(error)
             }
@@ -70,10 +70,47 @@ rediser.hget = async (key, name) => {
                 return reject(error)
             }
 
-            return resolve(reply)
+            return resolve(JSON.parse(reply))
         })
     })
 }
+
+rediser.hgetall = async (key) => {
+    return new Promise((resolve, reject) => {
+        client.hgetall(key, (error, replys) => {
+            if (error) {
+                return reject(error)
+            }
+
+            return resolve(replys.map(reply => JSON.parse(reply)))
+        })
+    })
+}
+
+rediser.hdel = async (key, name) => {
+    return new Promise((resolve, reject) => {
+        client.hdel(key, name, (error, reply) => {
+            if (error) {
+                return reject(error)
+            }
+
+            return resolve()
+        })
+    })
+}
+
+rediser.del = async (key) => {
+    return new Promise((resolve, reject) => {
+        client.del(key, (error, reply) => {
+            if (error) {
+                return reject(error)
+            }
+
+            return resolve()
+        })
+    })
+}
+
 
 
 module.exports = rediser
