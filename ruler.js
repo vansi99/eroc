@@ -41,7 +41,7 @@ ruler.gate = (option={}) => {
 
             const tiat = await rediser.hget('user_tiat', req.u.user._id)
 
-            if (!tiat) {
+            if (tiat === null) {
                 if (option.api) {
                     return res.error('user tiat not found')
                 } else {
