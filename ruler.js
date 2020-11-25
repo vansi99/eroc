@@ -30,7 +30,7 @@ ruler.gate = (option={}) => {
                     return res.error({ message: '401 Unauthorized' }, { code: 401 })
                 } else {
                     res.u.cookie('token', '')
-                    return res.redirect('/login')
+                    return res.redirect(`/login?next=${req.originalUrl}`)
                 }
             }
 
@@ -46,7 +46,7 @@ ruler.gate = (option={}) => {
                     return res.error('user tiat not found')
                 } else {
                     res.u.cookie('token', '')
-                    return res.redirect('/login')
+                    return res.redirect(`/login?next=${req.originalUrl}`)
                 }
             }
 
