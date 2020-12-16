@@ -26,7 +26,14 @@ kafker.client = new Kafka({
     brokers: setting.broker_uri.split(','),
     logLevel: logLevel.WARN,
     logCreator: kafker.logger,
+
+    retry: {
+        initialRetryTime: 200,
+        retries: 100,
+    },
 })
+
+console.log('kafker: 🚕 connecting...')
 
 kafker.pub = async (topic, message) => {
 
@@ -46,7 +53,7 @@ kafker.pub = async (topic, message) => {
 kafker.sub = async (topic, handle, option) => {
 
     if (kafker.consumer[topic]) {
-        return console.error(`kafker: consumer already already exists, topic=${topic}`)
+        return console.error(`kafker: consumer already exists, topic=${topic}`)
     }
 
     option = Object.assign({
@@ -56,6 +63,16 @@ kafker.sub = async (topic, handle, option) => {
 
     const consumer = kafker.client.consumer({
         groupId: option.group,
+
+        retry: {
+            initialRetryTime: 100,
+            retries: 10,
+
+            restartOnFailure: async (error) => {
+                console.error(`kafker: all retries failed, topic=${topic}`, error)
+                return false
+            }
+        },
     })
 
     kafker.consumer[topic] = {
