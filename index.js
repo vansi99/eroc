@@ -191,6 +191,10 @@ eroc.query = () => {
         let result = eroc.mongoose.models[model]
     
         Object.keys(pipeline).forEach((k) => {
+            if (k === 'client') {
+                return
+            }
+
             result = Array.isArray(pipeline[k]) ? result[k](...pipeline[k]) : result[k](pipeline[k])
         })
         
