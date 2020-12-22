@@ -86,7 +86,7 @@ ruler.detect = () => {
                 })
             }
     
-            if (req.headers.client) {
+            if (!config.rulerDisableDetectClient && req.headers.client) {
                 let user = {}
 
                 if (config.clients) {
@@ -117,7 +117,7 @@ ruler.detect = () => {
                 req.u.client.uid = user._id
             }
 
-            if (req.headers.partner) {
+            if (!config.rulerDisableDetectPartner && req.headers.partner) {
                 let user = {}
 
                 if (config.clients) {
