@@ -70,10 +70,8 @@ requester.fetch = ({ url, method, body, param, option }) => {
     }
 
     if (param) {
-        url += (url.indexOf('?') !== 0? '?' : '&') + Object.keys({
-            client: config.client,
-            ...param,
-        }).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(param[k])}`).join('&')
+        url += (url.indexOf('?') !== 0? '?' : '&')
+            + Object.keys(param).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(param[k])}`).join('&')
     }
 
     return fetch(url, arg).then((res) => {
