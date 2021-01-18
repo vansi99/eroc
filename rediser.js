@@ -27,6 +27,18 @@ rediser.cmd = async (...arg) => {
     })
 }
 
+rediser.expire = (key, time) => {
+    return new Promise((resolve, reject) => {
+        client.expire(key, time, (error, reply) => {
+            if (error) {
+                return reject(error)
+            }
+
+            return resolve(JSON.parse(reply))
+        })
+    })
+}
+
 rediser.get = async (key) => {
     return new Promise((resolve, reject) => {
         client.get(key, (error, reply) => {

@@ -1,10 +1,11 @@
 const http = require('http')
 
 const ruler = require('../ruler')
+const event = require('../event')
 
 
 const createUtil = (req, res, next) => {
-    const util = {}
+    const util = new event.Event()
 
     util.cookie = (key, value, option={}) => {
 
@@ -110,6 +111,8 @@ const requestio = (req, res, next) => {
 
         res.status(option.code || 200)
         res.json(response)
+
+        res.u.emit('success', response)
     }
 
     res.error = (error, option={}) => {
