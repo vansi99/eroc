@@ -22,11 +22,11 @@ cacher.middle = (option) => {
 
             if (data) {
                 res.append('cacher', 'cached')
-                return res.success(...data)
+                return res.json(data)
             }
         }
 
-        res.u.listen('success', (...data) => {
+        res.u.listen('success', (data) => {
             rediser.set(key, data)
             rediser.expire(key, option.expire)
         })
