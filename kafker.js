@@ -10,7 +10,6 @@ const setting = {
     broker_uri: config.kafker_broker_uri || '',
 }
 
-kafker.ready = false
 kafker.consumer = {}
 
 kafker.logger = (level) => {
@@ -33,7 +32,7 @@ kafker.client = new Kafka({
     },
 })
 
-console.log('kafker: 🚕 connecting...')
+console.log(`kafker: 🚕 connecting ${setting.broker_uri}`)
 
 kafker.pub = async (topic, message) => {
 
@@ -52,13 +51,19 @@ kafker.pub = async (topic, message) => {
 
 kafker.sub = async (topic, handle, option) => {
 
+    if (typeof option === 'function') {
+        const tmp = handle
+        handle = option
+        option = tmp
+    }
+
     if (kafker.consumer[topic]) {
         return console.error(`kafker: consumer already exists, topic=${topic}`)
     }
 
     option = Object.assign({
         group: `${config.service}:${topic}`,
-        fromBeginning: true,
+        fb: true,
     }, option)
 
     const consumer = kafker.client.consumer({
@@ -84,7 +89,7 @@ kafker.sub = async (topic, handle, option) => {
 
     await consumer.subscribe({
         topic,
-        fromBeginning: option.fromBeginning,
+        fromBeginning: option.fb,
     })
 
     await consumer.run({
