@@ -1,11 +1,8 @@
 const phone = {}
 
 phone.refinePhoneNumber = (phoneNumber='') => {
-    if (phoneNumber[0] === ' ') {
-        return `+${phoneNumber.slice(1)}`
-    }
-
-    return phoneNumber[0] === '0'? `+84${phoneNumber.slice(1)}` : phoneNumber
+    phoneNumber = phoneNumber.replace(/[^0-9]/g, '')
+    return phoneNumber[0] === '0' ? `+84${phoneNumber.slice(1)}` : `+${phoneNumber}`
 }
 
 
