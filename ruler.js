@@ -69,7 +69,11 @@ ruler.gate = (option={}) => {
             next()
         }
 
-        handle().catch(next)
+        handle().catch((error) => {
+            res.u.cookie('token', '')
+            console.error(error)
+            return next('Có lỗi trong quá trình đang nhập, vui lòng thử lại')
+        })
     }
 }
 
@@ -151,7 +155,11 @@ ruler.detect = () => {
             next()
         }
 
-        handle().catch(next)
+        handle().catch((error) => {
+            res.u.cookie('token', '')
+            console.error(error)
+            return next('Có lỗi trong quá trình đang nhập, vui lòng thử lại')
+        })
     }
 }
 
