@@ -34,7 +34,7 @@ kafker.client = new Kafka({
 
 console.log(`kafker: 🚕 connecting ${setting.broker_uri}`)
 
-kafker.pub = async (topic, message) => {
+kafker.pub = async (topic, message=null) => {
 
     if (!kafker.producer) {
         kafker.producer = kafker.client.producer()
@@ -49,6 +49,12 @@ kafker.pub = async (topic, message) => {
     })
 }
 
+/**
+ * 
+ * @param {string} topic 
+ * @param {object} [option] { group, fb: from beginning, retry: number of retries }
+ * @param {function} handle
+ */
 kafker.sub = async (topic, handle, option) => {
 
     if (typeof option === 'function') {
@@ -64,14 +70,14 @@ kafker.sub = async (topic, handle, option) => {
     option = Object.assign({
         group: `${config.service}:${topic}`,
         fb: true,
+        retry: 0,
     }, option)
 
     const consumer = kafker.client.consumer({
         groupId: option.group,
-
+        sessionTimeout: 300000,
         retry: {
-            initialRetryTime: 100,
-            retries: 10,
+            retries: option.retry,
 
             restartOnFailure: async (error) => {
                 console.error(`kafker: all retries failed, topic=${topic}`, error)
