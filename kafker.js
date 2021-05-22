@@ -69,7 +69,7 @@ kafker.sub = async (topic, handle, option) => {
 
     option = Object.assign({
         group: `${config.service}:${config.env}:${topic}`,
-        fb: true,
+        fb: false,
         retry: 0,
     }, option)
 
