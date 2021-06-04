@@ -44,7 +44,7 @@ const requestio = (req, res, next) => {
     res.u = createUtil(res, res, next)
     req.u = res.u
 
-    req.getParam = (key, defaultValue) => {
+    req.getParam = (key, defaultValue, convert) => {
         const value = [req.body[key], req.query[key], req.params[key], defaultValue].find(v => v !== undefined)
 
         if (value === undefined) {
@@ -53,7 +53,7 @@ const requestio = (req, res, next) => {
             throw `missing param ${key}`
         }
 
-        return value
+        return convert ? convert(value) : value
     }
 
     req.getTrueParam = (key, defaultValue) => {
