@@ -1,6 +1,10 @@
 const util = {}
 
 util.refine = (place) => {
+
+    if (typeof place === 'string') {
+        place = JSON.parse(place)
+    }
     
     place.components = place.address_components
         .map((c) => {
