@@ -26,8 +26,8 @@ const genNextUrl = (data, req, res) => {
         return ''
     }
 
-    const limit = +req.getParam('limit', res.u.paging)
-    const offset = +req.getParam('offset', 0) + limit
+    const limit = +req.gp('limit', res.u.paging)
+    const offset = +req.gp('offset', 0) + limit
     const query = { ...req.query }
 
     if (data.length < limit) {
@@ -44,7 +44,7 @@ const requestio = (req, res, next) => {
     res.u = createUtil(res, res, next)
     req.u = res.u
 
-    req.getParam = (key, defaultValue, convert) => {
+    req.gp = (key, defaultValue, convert) => {
         const value = [req.body[key], req.query[key], req.params[key], defaultValue].find(v => v !== undefined)
 
         if (value === undefined) {
@@ -56,8 +56,8 @@ const requestio = (req, res, next) => {
         return convert ? convert(value) : value
     }
 
-    req.getTrueParam = (key, defaultValue) => {
-        const value = req.getParam(key, defaultValue)
+    req.gtp = (key, defaultValue) => {
+        const value = req.gp(key, defaultValue)
 
         if (!value && value !== defaultValue) {
             throw `missing or null param ${key}`
