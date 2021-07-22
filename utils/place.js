@@ -19,7 +19,7 @@ util.refine = (place) => {
 
         place.components = place.address_components
         .map((c) => {
-            return c.long_name.replace(/tỉnh|thành phố|tp\.|quận|huyện|phường|xã/gi, '').trim()
+            return c.long_name.replace(/tỉnh|thành phố|tp\.|quận|huyện|phường|xã|Tx\./gi, '').trim()
         })
         .reverse()
     }
