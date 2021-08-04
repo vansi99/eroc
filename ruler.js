@@ -13,6 +13,22 @@ ruler.get = async (req) => {
     }
 }
 
+ruler.buidPermisisons = (user) => {
+    if (!user?.permission || user.permissions) {
+        return
+    }
+
+    user.permissions = user.permission.split(';').map((p) => {
+        const [ role, scope, permission ] = p.split(':')
+
+        return {
+            role,
+            scope,
+            permissions: permission.split(',')
+        }
+    })
+}
+
 ruler.gate = (option={}) => {
     const rediser = require('./rediser')
 
@@ -152,19 +168,6 @@ ruler.detect = () => {
                 req.u.client.uid = user._id
             }
 
-            // detect and parse permission
-            if (req.u.user.per) {
-                req.u.user.permissions = req.u.user.per.split(';').map((p) => {
-                    const [ role, scope, permission ] = p.split(':')
-
-                    return {
-                        role,
-                        scope,
-                        permissions: permission.split(',')
-                    }
-                })
-            }
-
             next()
         }
 
@@ -185,12 +188,35 @@ ruler.checkRole = (user, roles) => {
 }
 
 ruler.checkPermission = (user, role, scope, permissions) => {
-    if (!user || !Array.isArray(user.permissions)) {
+    if (!user) {
         return
     }
 
+    ruler.buidPermisisons(user)
+
+    permissions = permissions.filter(p => p)
+
     return user.permissions.find((p) => {
-        return p.role === role && p.scope === scope && permissions.find(rp => p.permissions.includes(rp))
+        if (p.role !== role) {
+            return
+        }
+
+        if (p.scope !== scope) {
+            return
+        }
+
+        if (permissions.length) {
+
+            for (const per of permissions) {
+                if (p.permissions.includes(per)) {
+                    return true
+                }
+            }
+
+            return
+        }
+
+        return true
     })
 }
 
@@ -206,7 +232,7 @@ ruler.role = (role, reject) => {
     }
 }
 
-ruler.per = (role, scope, permissions, reject) => {
+ruler.permission = (role, scope, permissions, reject) => {
 
     return (req, res, next) => {
         if (!ruler.checkPermission(req.u.user, role, scope, permissions)) {

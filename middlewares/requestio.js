@@ -87,7 +87,7 @@ const requestio = (req, res, next) => {
                 }
             }
         },
-        per: async (role, scope, permission) => {
+        permission: async (role, scope='', permission='') => {
             const permissions = permission.split(' ').filter(p => p)
             const user = await ruler.get(req)
 
@@ -95,7 +95,7 @@ const requestio = (req, res, next) => {
                 throw 'require login'
             }
 
-            if (!ruler.checkPermission(user, permissions)) {
+            if (!ruler.checkPermission(user, role, scope, permissions)) {
                 throw {
                     message: '403 Forbidden',
                     require: permissions,
