@@ -80,10 +80,25 @@ const requestio = (req, res, next) => {
                 throw 'require login'
             }
 
-            if (!ruler.check(user, roles)) {
+            if (!ruler.checkRole(user, roles)) {
                 throw {
                     message: '403 Forbidden',
                     require: roles,
+                }
+            }
+        },
+        per: async (role, scope, permission) => {
+            const permissions = permission.split(' ').filter(p => p)
+            const user = await ruler.get(req)
+
+            if (!user) {
+                throw 'require login'
+            }
+
+            if (!ruler.checkPermission(user, permissions)) {
+                throw {
+                    message: '403 Forbidden',
+                    require: permissions,
                 }
             }
         },
