@@ -2,6 +2,10 @@ const util = {}
 
 util.refine = (place) => {
 
+    if (!place) {
+        return place
+    }
+
     if (typeof place === 'string') {
         place = JSON.parse(place)
     }
