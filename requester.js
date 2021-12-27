@@ -1,4 +1,5 @@
 const fetch = require('node-fetch')
+const AbortController = require('abort-controller')
 
 const config = require('./config')
 
@@ -9,9 +10,6 @@ const requester = {
             client: config.client || '',
         },
         apiBase: config.requester_service_base,
-        option: {
-            timeout: 30000,
-        },
     }
 }
 
@@ -24,15 +22,23 @@ requester.fetch = ({ url, method, body, param, option }) => {
     const arg = {
         // defaut node-fetch option
         // https://www.npmjs.com/package/node-fetch#options
-        ...setting.option,
 
         method,
         headers: {
             ...setting.header,
             ...option.header,
-        }
+        },
+        ...option,
     }
 
+    const holder = {}
+
+    if (option.timeout) {
+        const controller = new AbortController()
+
+        holder.timeout = setTimeout(() => controller.abort(), option.timeout)
+        arg.signal = controller.signal
+    }
 
 
     if (url.indexOf('http') !== 0) {
@@ -87,6 +93,14 @@ requester.fetch = ({ url, method, body, param, option }) => {
         }
 
         return Promise.resolve(res)
+    }).catch((error) => {
+        if (error.message === 'The user aborted a request.') {
+            return Promise.reject(new Error('requester: timeout'))
+        }
+
+        return Promise.reject(error)
+    }).finally(() => {
+        clearTimeout(holder.timeout)
     })
 }
 
