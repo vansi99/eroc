@@ -17,7 +17,13 @@ const setting = requester.setting
 
 
 requester.fetch = ({ url, method, body, param, option }) => {
-    option = option || {}
+
+    option = Object.assign({
+        // parse: 'json',
+        // timeout: 30000,
+        // formData: false,
+        // header: {},
+    }, option)
     
     const arg = {
         // defaut node-fetch option
@@ -93,12 +99,6 @@ requester.fetch = ({ url, method, body, param, option }) => {
         }
 
         return Promise.resolve(res)
-    }).catch((error) => {
-        if (error.message === 'The user aborted a request.') {
-            return Promise.reject(new Error('requester: timeout'))
-        }
-
-        return Promise.reject(error)
     }).finally(() => {
         clearTimeout(holder.timeout)
     })
