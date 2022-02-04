@@ -1,6 +1,5 @@
 const http = require('http')
 
-const ruler = require('../ruler')
 const event = require('../event')
 
 
@@ -64,44 +63,6 @@ const requestio = (req, res, next) => {
         }
 
         return value
-    }
-
-    req.auth = {
-        login: async () => {
-            if (!await ruler.get(req)) {
-                throw 'require login'
-            }
-        },
-        role: async (role) => {
-            const roles = role.split(' ').filter(r => r)
-            const user = await ruler.get(req)
-
-            if (!user) {
-                throw 'require login'
-            }
-
-            if (!ruler.checkRole(user, roles)) {
-                throw {
-                    message: '403 Forbidden',
-                    require: roles,
-                }
-            }
-        },
-        permission: async (role, scope='', permission='') => {
-            const permissions = permission.split(' ').filter(p => p)
-            const user = await ruler.get(req)
-
-            if (!user) {
-                throw 'require login'
-            }
-
-            if (!ruler.checkPermission(user, role, scope, permissions)) {
-                throw {
-                    message: '403 Forbidden',
-                    require: permissions,
-                }
-            }
-        },
     }
 
     res.success = (data, option) => {
