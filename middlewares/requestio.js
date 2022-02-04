@@ -2,23 +2,6 @@ const http = require('http')
 
 const event = require('../event')
 
-
-const createUtil = (req, res, next) => {
-    const util = new event.Event()
-
-    util.cookie = (key, value, option={}) => {
-
-        option = {
-            maxAge: 31104000000,
-            ...option
-        }
-
-        res.cookie(key, value, option)
-    }
-
-    return util
-}
-
 const genNextUrl = (data, req, res) => {
 
     if (!Array.isArray(data)) {
@@ -39,9 +22,6 @@ const genNextUrl = (data, req, res) => {
 }
 
 const requestio = (req, res, next) => {
-
-    res.u = createUtil(res, res, next)
-    req.u = res.u
 
     req.gp = (key, defaultValue, convert) => {
         const value = [req.body[key], req.query[key], req.params[key], defaultValue].find(v => v !== undefined)
