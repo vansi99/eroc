@@ -1,7 +1,5 @@
 const http = require('http')
 
-const event = require('../event')
-
 const genNextUrl = (data, req, res) => {
 
     if (!Array.isArray(data)) {
