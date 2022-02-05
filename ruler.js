@@ -38,7 +38,7 @@ ruler.detect = () => {
             const token = req.headers.token || req.cookies.token
 
             if (token) {
-                req.u.user = await jwt.verify(token).catch((error) => {
+                req.user = await jwt.verify(token).catch((error) => {
                     res.cookie('token', '')
                     return next(error)
                 })

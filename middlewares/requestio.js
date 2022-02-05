@@ -104,8 +104,6 @@ const requestio = (req, res, next) => {
 
         res.status(option.code || 200)
         res.json(response)
-
-        res.u.emit('success', response)
     }
 
     res.error = (error, option={}) => {
