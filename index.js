@@ -9,6 +9,7 @@ const expressListEndpoints = require('express-list-endpoints')
 
 const config = require('./config')
 const requestio = require('./middlewares/requestio')
+const ruler = require('./ruler')
 
 
 const eroc = {

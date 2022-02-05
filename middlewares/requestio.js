@@ -1,4 +1,5 @@
 const http = require('http')
+const ruler = require('../ruler')
 
 const genNextUrl = (data, req, res) => {
 
