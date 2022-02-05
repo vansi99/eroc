@@ -7,7 +7,7 @@ const genNextUrl = (data, req, res) => {
         return ''
     }
 
-    const limit = +req.gp('limit', res.u.paging)
+    const limit = +req.gp('limit', res.paging)
     const offset = +req.gp('offset', 0) + limit
     const query = { ...req.query }
 
@@ -97,7 +97,7 @@ const requestio = (req, res, next) => {
             response.data = data
         }
 
-        if (res.u.paging) {
+        if (res.paging) {
             response.meta = response.meta || {}
             response.meta.next = genNextUrl(data, req, res)
         }
